@@ -12,12 +12,8 @@ jobs:
     runs-on: ubuntu-latest
 
     # Map branches to GitHub Environments
-    environment: >-
-  ${{ 
-    github.ref_name == 'main' && 'production' ||
-    github.ref_name == 'dev' && 'development' ||
-    'staging' 
-  }}
+    environment: ${{ github.ref_name == 'main' && 'production' || github.ref_name == 'dev' && 'development' || 'staging' }}
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -71,10 +67,9 @@ jobs:
           DEPLOY_HOST: ${{ vars.DEPLOY_HOST }}
           DEPLOY_USER: ${{ vars.DEPLOY_USER }}
           DEPLOY_PATH: ${{ vars.DEPLOY_PATH }}
-          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
         run: |
           mkdir -p ~/.ssh
-          echo "$SSH_PRIVATE_KEY" > ~/.ssh/deploy_key
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/deploy_key
           chmod 600 ~/.ssh/deploy_key
 
           ssh -i ~/.ssh/deploy_key $DEPLOY_USER@$DEPLOY_HOST "ls -la $DEPLOY_PATH"
