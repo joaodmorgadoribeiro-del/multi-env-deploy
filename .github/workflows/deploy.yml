@@ -12,8 +12,12 @@ jobs:
     runs-on: ubuntu-latest
 
     # Map branches to GitHub Environments
-    environment: ${{ github.ref_name == 'main' && 'production' || github.ref_name == 'dev' && 'development' || 'staging' }}
-
+    environment: >-
+  ${{ 
+    github.ref_name == 'main' && 'production' ||
+    github.ref_name == 'dev' && 'development' ||
+    'staging' 
+  }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
